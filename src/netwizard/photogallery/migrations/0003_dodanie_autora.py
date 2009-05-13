@@ -8,14 +8,14 @@ class Migration:
     def forwards(self, orm):
         
         # Adding field 'Photo.author_id'
-        db.add_column('photogallery_photo', 'author_id', models.ForeignKey(orm['auth.User'], related_name='gallery_photos'))
+        db.add_column('photogallery_photo', 'author', models.ForeignKey(orm['auth.User'], related_name='gallery_photos'))
         
     
     
     def backwards(self, orm):
         
         # Deleting field 'Photo.author_id'
-        db.delete_column('photogallery_photo', 'author_id_id')
+        db.delete_column('photogallery_photo', 'author_id')
         
     
     

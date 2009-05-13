@@ -1,0 +1,26 @@
+{% extends "photogallery/base_site.html" %}
+
+{% block content %}
+
+<div id="PhotoAlbumList">
+<h2>Albumy</h2>
+{% if albums %}
+
+{% for album in albums %}
+{% block content_album %}
+    <div class="album">
+        <img src="#" alt="{{ album.title|default:"Unnamed" }}" />
+        <h3>{{ album.title }}</h3>
+        <p class="intro">{{ album.intro }}</p>
+    </div>
+{% endblock content_album %}
+{% endfor %}
+
+{% else %}
+
+<p>Brak albumów</p>
+{% endif %}
+
+</div>
+
+{% endblock content %}

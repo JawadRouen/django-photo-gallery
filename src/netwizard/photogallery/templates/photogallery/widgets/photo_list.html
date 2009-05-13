@@ -1,0 +1,23 @@
+{% extends "photogallery/widgets/base.html" %}
+
+{% block content %}
+
+{% if photos %}
+
+{% for photo in photos %}
+{% block content_photo %}
+    <div class="photo">
+        <img src="#" alt="{{ photo.title|default:"Untitled" }}" />
+        <h3>{{ photo.title }}</h3>
+        <p class="intro">{{ photo.intro }}</p>
+    </div>
+{% endblock content_photo %}
+{% endfor %}
+
+{% else %}
+
+<p>Brak zdjęć</p>
+{% endif %}
+
+
+{% endblock %}

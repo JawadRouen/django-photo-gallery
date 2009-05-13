@@ -1,0 +1,10 @@
+{% extends "photogallery/base_site.html" %}
+{% load layout_widgets %}
+
+{% block content %}
+
+<div id="PhotoList">
+    {% include_widget PhotoList photos %}
+</div>
+
+{% endblock content %}
