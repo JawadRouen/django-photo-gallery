@@ -1,4 +1,5 @@
 {% extends "photogallery/widgets/base.html" %}
+{% load imageprocess %}
 
 {% block content %}
 
@@ -7,9 +8,9 @@
 {% for photo in photos %}
 {% block content_photo %}
     <div class="photo">
-        <img src="#" alt="{{ photo.title|default:"Untitled" }}" />
-        <h3>{{ photo.title }}</h3>
-        <p class="intro">{{ photo.intro }}</p>
+        <img src="{{ MEDIA_URL}}{% thumbnail_url photo.image 120 80 %}" alt="{{ photo.title|default:"Untitled" }}" />
+        {% if photo.title %}<h3>{{ photo.title }}</h3>{% endif %}
+        {% if photo.intro %}<p class="intro">{{ photo.intro }}</p>{% endif %}
     </div>
 {% endblock content_photo %}
 {% endfor %}

@@ -27,7 +27,7 @@ class Photo(models.Model):
     album = models.ForeignKey(Album, null=True, blank=True, related_name='photos')
     title = models.CharField(max_length=255, null=True, blank=True)
     shoot_date = models.DateField(null=True, blank=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
     author = models.ForeignKey(User, related_name='gallery_photos')
     objects = PhotoManager()
