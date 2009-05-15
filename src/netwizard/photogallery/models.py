@@ -29,7 +29,7 @@ class Photo(models.Model):
     shoot_date = models.DateField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
-    author = models.ForeignKey(User, related_name='gallery_photos')
+    uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos')
     objects = PhotoManager()
 
 

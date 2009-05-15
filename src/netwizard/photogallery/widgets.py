@@ -20,6 +20,13 @@ class PhotoList(Widget):
         return options
 
 
+class PhotoView(Widget):
+    template = 'photogallery/widgets/photo_view.html'
+
+    def get_context(self, photo, options):
+        options.update({'photo': photo,})
+        return options
+
 
 class UserPhotos(PhotoList):
     template = 'photogallery/widgets/user_photos.html'

@@ -1,0 +1,21 @@
+{% extends "photogallery/widgets/base.html" %}
+{% load imageprocess layout_widgets %}
+
+{% block content %}
+    {% block photo_title %}
+    <h3>{{ photo.title|default:"Bez tytułu" }}</h3>
+    {% endblock %}
+    <div class="photo">
+        <img src="{{ MEDIA_URL }}{% thumbnail_url photo.image 640 480 %}" alt="{{ photo.title|default:"Bez tytułu" }}" />
+    </div>
+    <div class="details">
+        <dl>
+            <dt class="upload_time">Dodano:</dt>
+            <dd>{{ photo.created_at }}</dd>
+            {% if photo.uploader %}<dd class="uploader">przez <a href="#">{{ photo.uploader }}</a></dd>{% endif %}
+            {% if photo.author %}<dt class="author">Autor fotografii:</dt><dd class="author">{{ photo.author }}</dd>{% endif %}
+            {% if photo.shoot_date %}<dt class="shoot_date">Autor fotografii:</dt><dd class="description">{{ photo.author }}</dd>{% endif %}
+            {% if photo.description %}<dt class="description">Opis:</dt><dd class="description">{{ photo.description }}</dd>{% endif %}
+        </dl>
+    </div>
+{% endblock %}
