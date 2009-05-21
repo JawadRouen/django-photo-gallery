@@ -80,7 +80,13 @@ def edit(request, id=None):
     if request.method == 'POST':
         form = forms.PhotoWithAlbumEdit(request.POST, request.FILES, instance=photo)
         if form.is_valid():
-            photo = form.save()
+            photo = form.save(commit=False)
+            if request.POST.get('create_album'):
+                album = Album()
+                album.title = request.POST.get('new_album_name')
+                album.save()
+                photo.album = album
+                photo.save()
             return HttpResponseRedirect(reverse('photogallery-photos-show', args=[photo.id]))
     else:
         form = forms.PhotoWithAlbumEdit(instance=photo)
