@@ -1,9 +1,13 @@
 from netwizard.django.helpers import expose
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.http import Http404, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from models import *
 import widgets
+import forms
 
 
 def index(request):
@@ -58,6 +62,29 @@ def list(request, album=None):
 
 @expose('photogallery/show.html')
 def show(request, id):
-    photo = Photo.objects.published().get(id=id)
-    return {'photo': photo}
+    try:
+        photo = Photo.objects.published().get(id=id)
+        return {'photo': photo}
+    except photo.DoesNotExist:
+        raise Http404
+
+@login_required
+@never_cache
+@expose('photogallery/edit_photo.html')
+def edit(request, id=None):
+    try:
+        photo = Photo.objects.published().get(id=id)
+    except photo.DoesNotExist:
+        photo = Photo()
+
+    if request.method == 'POST':
+        form = forms.PhotoWithAlbumEdit(request.POST, request.FILES, instance=photo)
+        if form.is_valid():
+            photo = form.save()
+            return HttpResponseRedirect(reverse('photogallery-photos-show', args=[photo.id]))
+    else:
+        form = forms.PhotoWithAlbumEdit(instance=photo)
+
+    return {'form': form, 'photo': photo}
+
 

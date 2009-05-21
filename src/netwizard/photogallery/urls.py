@@ -10,4 +10,5 @@ urlpatterns = patterns('netwizard.photogallery.views',
     url(r'albums/(\d+)/photos/$', 'list', name='photogallery-album-photos'),
     url(r'photos/$', 'list', name='photogallery-photos'),
     url(r'photos/(\d+).html$', 'show', name='photogallery-photos-show'),
+    url(r'photos/edit/(\d+).html$', 'edit', name='photogallery-photo-edit'),
 )

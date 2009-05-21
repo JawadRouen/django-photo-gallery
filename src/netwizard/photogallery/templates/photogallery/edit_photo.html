@@ -1,0 +1,17 @@
+{% extends "photogallery/base_site.html" %}
+{% load layout_widgets %}
+
+{% block content %}
+
+{% if photo.id %}
+{% include_widget PhotoView photo %}
+{% endif %}
+
+<form method="post" action="{% url photogallery-photo-edit photo.id %}" enctype="multipart/form-data">
+    <table>
+        {{ form.as_table }}
+        <tr><td>&nbsp;</td><td><input type="submit" value="{% if photo.id %}Zapisz{% else %}Dodaj{% endif %}" /></tr>
+    </table>
+</form>
+
+{% endblock %}
