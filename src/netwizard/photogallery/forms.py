@@ -1,6 +1,7 @@
 from django.forms.models import ModelForm
 from django import forms
 import models
+import fields
 
 class PhotoEdit(ModelForm):
     class Meta:
@@ -9,7 +10,7 @@ class PhotoEdit(ModelForm):
 
 
 class PhotoWithAlbumEdit(ModelForm):
-    album = forms.ModelChoiceField(models.Album.objects, required=False)
+    album = fields.CityAlbumChoice(models.Album.objects, required=False)
 
     class Meta:
         model = models.Photo
