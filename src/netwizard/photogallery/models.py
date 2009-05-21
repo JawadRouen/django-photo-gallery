@@ -11,12 +11,25 @@ class PhotoManager(models.Manager):
     def published(self):
         return self.filter()
 
+    def albums(self):
+        albums = self.values_list('album_id', flat=True)
+        return Album.objects.filter(id__in = albums)
+
 
 class Album(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
     objects = AlbumManager()
+
+    def image(self):
+        return self.photos.all()[0].image
+
+    def __str__(self):
+        return 'Album #%d' % self.id
+
+    def __unicode__(self):
+        return self.title
 
 
 class Photo(models.Model):

@@ -3,7 +3,12 @@
 
 {% block content %}
     {% block photo_title %}
-    <h3>{{ photo.title|default:"Bez tytułu" }}</h3>
+    <h3>
+        {% if photo.album %}
+        <a href="{% url photogallery-album-photos photo.album.id %}">{{ photo.album.title }}</a> -
+        {% endif %}
+        {{ photo.title|default:"Bez tytułu" }}
+    </h3>
     {% endblock %}
     <div class="photo">
         <img src="{{ MEDIA_URL }}{% thumbnail_url photo.image 640 480 %}" alt="{{ photo.title|default:"Bez tytułu" }}" />

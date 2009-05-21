@@ -33,8 +33,9 @@ def list(request, album=None):
     qs = Photo.objects.published()
     if album:
         try:
-            qs.filter(album=int(album))
+            qs = qs.filter(album=int(album))
         except ValueError:
+            qs = []
             pass
 
     p = Paginator(qs, 25)
@@ -49,6 +50,7 @@ def list(request, album=None):
         photos = p.page(p.num_pages)
 
     return {
+            'album': Album.objects.get(id=album) if album else None,
             'photos': photos.object_list,
             'pager': photos,
             }

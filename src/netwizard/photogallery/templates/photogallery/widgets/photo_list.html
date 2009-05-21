@@ -9,7 +9,7 @@
 {% block content_photo %}
     <div class="photo">
         <a href="{% url photogallery-photos-show photo.id %}"><img src="{{ MEDIA_URL}}{% thumbnail_url photo.image 120 80 %}" alt="{{ photo.title|default:"Untitled" }}" /></a>
-        {% if photo.title %}<h3>{{ photo.title }}</h3>{% endif %}
+        {% if photo.title %}<h4>{{ photo.title }}</h4>{% endif %}
         {% if photo.intro %}<p class="intro">{{ photo.intro }}</p>{% endif %}
     </div>
 {% endblock content_photo %}

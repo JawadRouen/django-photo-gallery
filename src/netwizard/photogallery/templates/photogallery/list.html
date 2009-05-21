@@ -3,6 +3,10 @@
 
 {% block content %}
 
+{% if album %}
+<h3>{{ album.title }}</h3>
+{% endif %}
+
 <div id="PhotoList" class="photo_list">
     {% include_widget PhotoList photos %}
 </div>
