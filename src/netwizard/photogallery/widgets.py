@@ -53,6 +53,8 @@ class PhotoView(Widget):
     template = 'photogallery/widgets/photo_view.html'
 
     def get_context(self, photo, options):
+        if not options.has_key('id'):
+            options['id'] = 'PhotoView'
         options.update({'photo': photo,})
         return options
 

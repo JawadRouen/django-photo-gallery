@@ -86,7 +86,7 @@ def edit(request, id=None):
                 album.title = request.POST.get('new_album_name')
                 album.save()
                 photo.album = album
-                photo.save()
+            photo.save()
             return HttpResponseRedirect(reverse('photogallery-photos-show', args=[photo.id]))
     else:
         form = forms.PhotoWithAlbumEdit(instance=photo)
