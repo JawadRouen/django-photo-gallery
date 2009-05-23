@@ -74,6 +74,10 @@ def show(request, id):
 def edit(request, id=None):
     try:
         photo = Photo.objects.published().get(id=id)
+        if request.user.id is not photo.uploader.id:
+            request.user.message_set.create(message='You have no privileges to edit this photo')
+            return HttpResponseRedirect(reverse('photogallery-photos-show', args=[photo.id]))
+            
     except photo.DoesNotExist:
         photo = Photo()
 
