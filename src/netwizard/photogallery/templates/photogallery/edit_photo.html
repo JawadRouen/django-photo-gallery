@@ -7,6 +7,7 @@
 {% include_widget PhotoView photo %}
 {% endif %}
 
+{% if can_edit %}
 <form id="PhotoEditForm" method="post" action="{% url photogallery-photo-edit photo.id %}" enctype="multipart/form-data">
     <fieldset>
         <table>
@@ -15,5 +16,8 @@
         </table>
     </fieldset>
 </form>
+{% else %}
+    Nie masz upranień do modyfikacji tego zdjęcia
+{% endif %}
 
 {% endblock %}

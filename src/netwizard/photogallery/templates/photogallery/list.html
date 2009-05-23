@@ -1,5 +1,5 @@
 {% extends "photogallery/base_site.html" %}
-{% load layout_widgets %}
+{% load layout_widgets cache %}
 
 {% block content %}
 
@@ -7,8 +7,10 @@
 <h3>{{ album.title }}</h3>
 {% endif %}
 
+{% cache 60 photos.count last_updated_at %}
 <div id="PhotoList" class="photo_list">
     {% include_widget PhotoList photos %}
 </div>
+{% endcache %}
 
 {% endblock content %}

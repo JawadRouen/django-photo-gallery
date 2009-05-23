@@ -1,9 +1,11 @@
 from netwizard.django.helpers import expose
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import never_cache, cache_page
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
+import datetime
 
 from models import *
 import widgets
@@ -52,9 +54,10 @@ def list(request, album=None):
         photos = p.page(page)
     except (EmptyPage, InvalidPage):
         photos = p.page(p.num_pages)
-
+    album = Album.objects.get(id=album) if album else None
     return {
-            'album': Album.objects.get(id=album) if album else None,
+            'album': album,
+            'last_updated_at': Photo.objects.get_max_updated_at(photos.object_list),
             'photos': photos.object_list,
             'pager': photos,
             }
@@ -74,27 +77,30 @@ def show(request, id):
 def edit(request, id=None):
     try:
         photo = Photo.objects.published().get(id=id)
-        if request.user.id is not photo.uploader.id:
-            request.user.message_set.create(message='You have no privileges to edit this photo')
-            return HttpResponseRedirect(reverse('photogallery-photos-show', args=[photo.id]))
-            
+        can_edit = request.user.id == photo.uploader.id
     except photo.DoesNotExist:
         photo = Photo()
+        can_edit = True
 
-    if request.method == 'POST':
+    if request.method == 'POST' and can_edit:
         form = forms.PhotoWithAlbumEdit(request.POST, request.FILES, instance=photo)
         if form.is_valid():
             photo = form.save(commit=False)
             if request.POST.get('create_album'):
                 album = Album()
                 album.title = request.POST.get('new_album_name')
+                request.user.message_set.create(message=_('Album %(name) created') % {'name': album.title })
                 album.save()
                 photo.album = album
+            if photo.album:
+                photo.album.updated_at = datetime.datetime.now()
+                photo.album.save(force_update=True)
             photo.save()
+            request.user.message_set.create(message=_('Photo updated') if id else _('Photo added'))
             return HttpResponseRedirect(reverse('photogallery-photos-show', args=[photo.id]))
     else:
         form = forms.PhotoWithAlbumEdit(instance=photo)
 
-    return {'form': form, 'photo': photo}
+    return {'form': form, 'photo': photo, 'can_edit': can_edit}
 
 

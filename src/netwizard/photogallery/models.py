@@ -10,6 +10,9 @@ class AlbumManager(models.Manager):
 class PhotoManager(models.Manager):
     def published(self):
         return self.filter()
+    
+    def get_max_updated_at(self, qs):
+        return None
 
     def albums(self):
         albums = self.values_list('album_id', flat=True)
@@ -19,7 +22,8 @@ class PhotoManager(models.Manager):
 class Album(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True, auto_now=True)
     objects = AlbumManager()
 
     def image(self):
@@ -41,7 +45,8 @@ class Photo(models.Model):
     title = models.CharField(max_length=255, null=True, blank=True)
     shoot_date = models.DateField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True, auto_now=True)
     uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos')
     objects = PhotoManager()
 

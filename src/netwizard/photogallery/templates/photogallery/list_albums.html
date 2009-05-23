@@ -1,7 +1,9 @@
 {% extends "photogallery/base_site.html" %}
+{% load cache %}
 
 {% block content %}
 
+{% cache 60 albums.count %}
 <div id="PhotoAlbumList">
 <h2>Albumy</h2>
 {% if albums %}
@@ -22,5 +24,6 @@
 {% endif %}
 
 </div>
+{% endcache %}
 
 {% endblock content %}
