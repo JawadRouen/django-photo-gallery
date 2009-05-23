@@ -10,6 +10,7 @@ import datetime
 from models import *
 import widgets
 import forms
+import auth
 
 
 def index(request):
@@ -77,10 +78,10 @@ def show(request, id):
 def edit(request, id=None):
     try:
         photo = Photo.objects.published().get(id=id)
-        can_edit = request.user.id == photo.uploader.id
     except photo.DoesNotExist:
         photo = Photo()
-        can_edit = True
+
+    can_edit = auth.can_edit_photo(request.user, photo)
 
     if request.method == 'POST' and can_edit:
         form = forms.PhotoWithAlbumEdit(request.POST, request.FILES, instance=photo)
