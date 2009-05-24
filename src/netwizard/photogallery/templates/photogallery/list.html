@@ -7,10 +7,16 @@
 <h3>{{ album.title }}</h3>
 {% endif %}
 
-{% cache 60 photos.count last_updated_at %}
 <div id="PhotoList" class="photo_list">
+{% if album %}
+{% cache 60 photos.count album.id album.updated_at last_updated_at %}
     {% include_widget PhotoList photos %}
-</div>
 {% endcache %}
+{% else %}
+{% cache 60 photos.count last_updated_at %}
+    {% include_widget PhotoList photos %}
+{% endcache %}
+{% endif %}
+</div>
 
 {% endblock content %}
