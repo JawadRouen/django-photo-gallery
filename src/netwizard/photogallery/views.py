@@ -63,7 +63,7 @@ class ShowPhoto(View):
             id = kwargs.get('id')
             photo = Photo.objects.published().get(id=id)
             return {'photo': photo}
-        except photo.DoesNotExist:
+        except Photo.DoesNotExist:
             self.raise404()
 
 
@@ -76,7 +76,7 @@ class EditPhoto(View):
         id = kwargs.get('id')
         try:
             photo = Photo.objects.published().get(id=id)
-        except photo.DoesNotExist:
+        except Photo.DoesNotExist:
             photo = Photo()
 
         can_edit = self.check_permissions(request.user, photo)
