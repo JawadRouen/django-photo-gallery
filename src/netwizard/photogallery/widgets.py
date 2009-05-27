@@ -2,6 +2,9 @@ from netwizard.widgets import Widget
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.forms import widgets
 from django.utils.safestring import mark_safe
+from netwizard.django.apps.registry import DatabaseRegistryConfig
+
+config = DatabaseRegistryConfig('photogallery.widgets')
 
 
 class AlbumSelectOrCreateWidget(widgets.Select):
@@ -45,7 +48,12 @@ class AlbumList(Widget):
             albums = p.page(page)
         except (EmptyPage, InvalidPage):
             albums = p.page(p.num_pages)
-        options.update({'albums': albums.object_list, 'pager': albums,})
+        options.update({
+            'albums': albums.object_list, 
+            'pager': albums,
+            'thumb_width': config.get('AlbumList.thumb_width'),
+            'thumb_height': config.get('AlbumList.thumb_height'),
+            })
         return options
 
 

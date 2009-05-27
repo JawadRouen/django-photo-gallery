@@ -7,7 +7,9 @@
 {% cache 60 albums.count %}
 <div id="PhotoAlbumList">
 <h2>Albumy</h2>
+{% block content_body %}
 {% include_widget AlbumList albums %}
+{% endblock %}
 
 </div>
 {% endcache %}
