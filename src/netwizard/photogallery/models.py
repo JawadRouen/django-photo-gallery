@@ -27,7 +27,9 @@ class Album(models.Model):
     objects = AlbumManager()
 
     def image(self):
-        return self.photos.all()[0].image
+        if self.photos.count():
+            return self.photos.all()[0].image
+        return None
 
     def __str__(self):
         return 'Album #%d' % self.id
