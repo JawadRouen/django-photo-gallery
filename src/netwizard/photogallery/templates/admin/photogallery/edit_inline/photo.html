@@ -1,0 +1,6 @@
+{% load imageprocess %}
+<div class="photo">
+    {% if photo.image %}
+    <img src="{{ MEDIA_URL }}{% thumbnail_url photo.image 120 80 %}" alt="{{ photo }}"/>
+    {% endif %}
+</div>

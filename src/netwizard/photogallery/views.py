@@ -4,7 +4,7 @@ from django.views.decorators.cache import never_cache, cache_page
 from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from netwizard.django.view import View, ListView, FormView
+from netwizard.django.view import View, ListView, FormView, MultiView
 import datetime
 
 from models import *
@@ -12,10 +12,26 @@ import widgets
 import forms
 import auth
 
+__all__ = ['albums', 'photos']
 
-# view classes
+
+# decorator proxy
+
+def decorator_proxy(func):
+    def decorate_method(unbound_method):
+        def method_proxy(self, *args, **kwargs):
+            def f(*a, **kw):
+                return unbound_method(self, *a, **kw)
+            return f(*args, **kwargs)
+        return method_proxy
+    return decorate_method
+
+"""
+view classes
+"""
 
 class ListAlbums(ListView):
+    template = 'photogallery/list_albums.html'
     limit = 50
 
     def get_query_set(self, request, **kwargs):
@@ -30,6 +46,7 @@ class ListAlbums(ListView):
 
 
 class ListPhotos(ListView):
+    template = 'photogallery/list.html'
     limit = 25
     
     def get_query_set(self, request, **kwargs):
@@ -54,9 +71,10 @@ class ListPhotos(ListView):
                 'photos': page.object_list,
                 'page': page,
                 }
-            
 
+        
 class ShowPhoto(View):
+    template = 'photogallery/show.html'
 
     def get_context(self, request, **kwargs):
         try:
@@ -68,6 +86,7 @@ class ShowPhoto(View):
 
 
 class EditPhoto(View):
+    template = 'photogallery/edit_photo.html'
 
     def check_permissions(self, user, photo):
         return auth.can_edit_photo(user, photo)
@@ -88,7 +107,7 @@ class EditPhoto(View):
                 if request.POST.get('create_album'):
                     album = Album()
                     album.title = request.POST.get('new_album_name')
-                    self.flash(_('Album %(name) created') % {'name': album.title })
+                    self.flash(_('Album %(name)s created') % {'name': album.title })
                     album.save()
                     photo.album = album
                 if photo.album:
@@ -102,19 +121,28 @@ class EditPhoto(View):
 
         return {'form': form, 'photo': photo, 'can_edit': can_edit}
 
+"""
+view entry points
+"""
+
+class AlbumViews(MultiView):
+    list = ListAlbums()
+    index = list
+
+
+class PhotoViews(MultiView):
+    list = ListPhotos()
+    show = ShowPhoto()
+    _edit = EditPhoto()
+
+    @decorator_proxy(login_required)
+    @decorator_proxy(never_cache)
+    def edit(self, request, **kwargs):
+        return self._edit(request, **kwargs)
 
 
 # views entry points
 
-list_albums = ListAlbums('photogallery/list_albums.html')
-index = list_albums
-list = ListPhotos('photogallery/list.html')
-show = ShowPhoto('photogallery/show.html')
-_edit = EditPhoto('photogallery/edit_photo.html')
-
-@login_required
-@never_cache
-def edit(request, **kwargs):
-    return _edit(request, **kwargs)
-
+albums = AlbumViews()
+photos = PhotoViews()
 

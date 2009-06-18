@@ -3,6 +3,8 @@ from django.forms import widgets
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.utils.safestring import mark_safe
 from netwizard.django.apps.registry import DatabaseRegistryConfig
+from django.conf import settings
+import models
 
 config = DatabaseRegistryConfig('photogallery.widgets')
 
@@ -79,4 +81,12 @@ class UserPhotos(PhotoList):
 
 class AdminPhotoEdit(Widget):
     register = False
-    pass
+    template = 'admin/photogallery/edit_inline/photo.html'
+    class Media:
+        css = {
+            'all': (settings.ADMIN_MEDIA_PREFIX + 'photogallery/css/edit.css',)
+        }
+
+    def get_context(self, value, options):
+        photo = models.Photo.objects.get(id=value) if value else None
+        return {'photo': photo,}
