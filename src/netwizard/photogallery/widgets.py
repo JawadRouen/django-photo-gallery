@@ -2,7 +2,7 @@ from netwizard.widgets import Widget
 from django.forms import widgets
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.utils.safestring import mark_safe
-from netwizard.django.apps.registry import DatabaseRegistryConfig
+from netwizard.registry.config import DatabaseRegistryConfig
 from django.conf import settings
 import models
 
