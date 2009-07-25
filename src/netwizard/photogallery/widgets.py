@@ -31,7 +31,10 @@ class PhotoList(Widget):
             photos = p.page(page)
         except (EmptyPage, InvalidPage):
             photos = p.page(p.num_pages)
-        options.update({'photos': photos.object_list, 'pager': photos,})
+        options.update({
+            'photos': photos.object_list, 
+            'pager': photos,
+            })
         return options
 
 
