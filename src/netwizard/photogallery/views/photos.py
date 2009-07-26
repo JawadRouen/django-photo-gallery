@@ -32,10 +32,11 @@ def list(request, id=None, **kwargs):
             extra_context=ctx, template_object_name='photo', **kwargs)
 
 
-def show(request, id, **kw):
+def show(request, id, template_name=None, extra_context=None, **kw):
     return object_detail(request, object_id=id,
             queryset=Photo.objects.published(),
-            template_name='photogallery/show.html',
+            template_name=template_name or 'photogallery/show.html',
+            extra_context = extra_context,
             template_object_name='photo', **kw)
 
 

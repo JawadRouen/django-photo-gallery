@@ -18,22 +18,13 @@ class AlbumSelectOrCreateWidget(widgets.Select):
 
 class PhotoList(Widget):
     template = 'photogallery/widgets/photo_list.html'
-    limit = 25
+    
+    def get_photos(self, list, options):
+        return list
 
     def get_context(self, list, options):
-        p = Paginator(list, options.get('limit', self.limit))
-        try:
-            page = int(options.get('page', 1))
-        except ValueError:
-            page = 1
-
-        try:
-            photos = p.page(page)
-        except (EmptyPage, InvalidPage):
-            photos = p.page(p.num_pages)
         options.update({
-            'photos': photos.object_list, 
-            'pager': photos,
+            'photos': self.get_photos(list, options), 
             })
         return options
 
