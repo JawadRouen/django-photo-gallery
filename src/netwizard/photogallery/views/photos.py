@@ -15,12 +15,15 @@ from netwizard.photogallery import forms, auth
 
 
 
-def list(request, id=None, **kwargs):
+def list(request, id=None, slug=None, template_name=None, **kwargs):
     photos = Photo.objects.published()
     album = None
     if id: # album
         photos = photos.filter(album=id)
         album = Album.objects.published().get(id=id)
+    elif slug:
+        album = Album.objects.published().get(slug=slug)
+        photos = album.photos.published()
 
     ctx = {
         'album': album,
@@ -28,7 +31,7 @@ def list(request, id=None, **kwargs):
         }
 
     return object_list(request, paginate_by=25,
-            queryset=photos, template_name='photogallery/list.html',
+            queryset=photos, template_name='photogallery/list.html' or template_name,
             extra_context=ctx, template_object_name='photo', **kwargs)
 
 
