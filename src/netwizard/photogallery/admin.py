@@ -7,5 +7,17 @@ from django.conf import settings
 
 import models
 
-site.register(models.Album)
-site.register(models.Photo)
+class AlbumAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_published', 'created_at',)
+    search_fields = ('title', 'description',)
+    list_filter = ('is_published', )
+
+
+class PhotoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'album', 'shoot_date', 'is_published', 'is_featured', 'uploader', 'created_at',)
+    list_display_links = ('id', 'title', )
+    search_fields = ('title', 'description', )
+    list_filter = ('album', 'is_published', 'is_featured',)
+
+site.register(models.Album, AlbumAdmin)
+site.register(models.Photo, PhotoAdmin)
