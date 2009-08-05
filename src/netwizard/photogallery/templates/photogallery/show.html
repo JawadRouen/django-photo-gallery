@@ -3,7 +3,7 @@
 
 {% block content %}
 
-{% cache 10 photo.updated_at %}
+{% cache 10 photo_view photo.id photo.updated_at %}
 {% include_widget PhotoView photo %}
 {% endcache %}
 

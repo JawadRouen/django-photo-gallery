@@ -9,11 +9,11 @@
 
 <div id="PhotoList" class="photo_list">
 {% if album %}
-{% cache 60 photo_list.count album.id album.updated_at last_updated_at %}
+{% cache 60 photogallery_photo_list photo_list.count album.id album.updated_at last_updated_at tag %}
     {% include_widget PhotoList photo_list %}
 {% endcache %}
 {% else %}
-{% cache 60 photos_list.count last_updated_at %}
+{% cache 60 photogallery_photo_list photo_list.count last_updated_at tag %}
     {% include_widget PhotoList photo_list %}
 {% endcache %}
 {% endif %}

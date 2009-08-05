@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from netwizard.django.helpers import flash, redirect
+from tagging.views import tagged_object_list
 
 from django.views.generic.list_detail import object_list, object_detail
 from django.views.generic.create_update import update_object, create_object
@@ -15,7 +16,7 @@ from netwizard.photogallery import forms, auth
 
 
 
-def list(request, id=None, slug=None, template_name=None, **kwargs):
+def list(request, id=None, slug=None, template_name=None, paginate_by=None, **kwargs):
     photos = Photo.objects.published()
     album = None
     if id: # album
@@ -28,10 +29,23 @@ def list(request, id=None, slug=None, template_name=None, **kwargs):
     ctx = {
         'album': album,
         'last_updated_at': Photo.objects.get_max_updated_at(photos),
+        'tag': None,
         }
 
-    return object_list(request, paginate_by=25,
-            queryset=photos, template_name='photogallery/list.html' or template_name,
+    return object_list(request, paginate_by=paginate_by or 25,
+            queryset=photos, template_name=template_name or 'photogallery/list.html',
+            extra_context=ctx, template_object_name='photo', **kwargs)
+
+
+def list_tagged(request, tag, template_name=None, extra_context=None, paginate_by=None, **kwargs):
+    photos = Photo.objects.published()
+    ctx = extra_context or {}
+    ctx.update({
+        'last_updated_at': Photo.objects.get_max_updated_at(photos),
+        'tag': tag,
+        })
+    return tagged_object_list(request, tag=tag, paginate_by=paginate_by or 25,
+            queryset_or_model=photos, template_name=template_name or 'photogallery/list.html',
             extra_context=ctx, template_object_name='photo', **kwargs)
 
 
