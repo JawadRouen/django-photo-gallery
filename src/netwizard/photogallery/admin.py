@@ -11,6 +11,15 @@ class AlbumAdmin(admin.ModelAdmin):
     list_display = ('title', 'is_published', 'created_at',)
     search_fields = ('title', 'description',)
     list_filter = ('is_published', )
+    actions = ['publish','hide']
+
+    def publish(self, request, queryset):
+        queryset.update(is_published=True)
+    publish.short_description = 'Mark selected albums as published'
+
+    def hide(self, request, queryset):
+        queryset.update(is_published=False)
+    hide.short_description = 'Hide selected albums'
 
 
 class PhotoAdmin(admin.ModelAdmin):
@@ -18,6 +27,16 @@ class PhotoAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'title', )
     search_fields = ('title', 'description', )
     list_filter = ('album', 'is_published', 'is_featured',)
+    actions = ['publish','hide']
+
+    def publish(self, request, queryset):
+        queryset.update(is_published=True)
+    publish.short_description = 'Mark selected photos as published'
+
+    def hide(self, request, queryset):
+        queryset.update(is_published=False)
+    hide.short_description = 'Hide selected photos'
+
 
 site.register(models.Album, AlbumAdmin)
 site.register(models.Photo, PhotoAdmin)
