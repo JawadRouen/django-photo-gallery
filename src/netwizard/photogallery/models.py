@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
 from tagging.models import Tag
 import tagging
@@ -27,15 +28,19 @@ class PhotoManager(models.Manager):
 
 
 class Album(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
+    title = models.CharField(max_length=255, verbose_name=_('title'))
+    description = models.TextField(null=True, blank=True, verbose_name=_('description'))
     default_image = models.ImageField(max_length=255, db_column='image',
             upload_to=os.path.join('uploads','photogallery','album_icons'),
-            null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True, auto_now=True)
-    is_published = models.BooleanField(default=False)
+            null=True, blank=True, verbose_name=_('default photo'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('created at'))
+    updated_at = models.DateTimeField(auto_now_add=True, auto_now=True, verbose_name=_('updated at'))
+    is_published = models.BooleanField(default=False, verbose_name=_('is published'))
     objects = AlbumManager()
+
+    class Meta:
+        verbose_name = _('album')
+        verbose_name_plural = _('albums')
 
     def image(self):
         if self.default_image:
@@ -54,19 +59,24 @@ class Album(models.Model):
 class Photo(models.Model):
     image = models.ImageField(
             max_length=255,
-            upload_to=os.path.join('uploads','photogallery')
+            upload_to=os.path.join('uploads','photogallery'),
+            verbose_name=_('image path'),
             )
-    album = models.ForeignKey(Album, null=True, blank=True, related_name='photos')
-    title = models.CharField(max_length=255, null=True, blank=True)
-    shoot_date = models.DateField(null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True, auto_now=True)
-    is_published = models.BooleanField(default=False)
-    is_featured = models.BooleanField(default=False)
-    uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos')
+    album = models.ForeignKey(Album, null=True, blank=True, related_name='photos', verbose_name=_('album'))
+    title = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('title'))
+    shoot_date = models.DateField(null=True, blank=True, verbose_name=_('shot date'))
+    description = models.TextField(null=True, blank=True, verbose_name=_('description'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('created at'))
+    updated_at = models.DateTimeField(auto_now_add=True, auto_now=True, verbose_name=_('updated at'))
+    is_published = models.BooleanField(default=False, verbose_name=_('is published'))
+    is_featured = models.BooleanField(default=False, verbose_name=_('is featured'))
+    uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos', verbose_name=_('uploader'))
 
     objects = PhotoManager()
+
+    class Meta:
+        verbose_name = _('photo')
+        verbose_name_plural = _('photos')
 
     """
     def _set_tags(self, tags):
