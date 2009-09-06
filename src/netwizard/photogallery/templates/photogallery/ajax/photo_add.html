@@ -1,0 +1,11 @@
+{% load widgets %}
+
+
+<form id="PhotoEditForm" method="post" action="{% url photogallery-ajax-photo-add %}" enctype="multipart/form-data">
+    <fieldset>
+        <table>
+            {{ form.as_table }}
+            <tr><td>&nbsp;</td><td><input type="submit" value="{% if photo.id %}Zapisz{% else %}Dodaj{% endif %}" /></tr>
+        </table>
+    </fieldset>
+</form>

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
 from tagging.models import Tag
+from netwizard.django import helpers as h
 import tagging
 
 import os
@@ -29,6 +30,7 @@ class PhotoManager(models.Manager):
 
 class Album(models.Model):
     title = models.CharField(max_length=255, verbose_name=_('title'))
+    slug = models.SlugField(unique=True, max_length=255)
     description = models.TextField(null=True, blank=True, verbose_name=_('description'))
     default_image = models.ImageField(max_length=255, db_column='image',
             upload_to=os.path.join('uploads','photogallery','album_icons'),
@@ -55,6 +57,16 @@ class Album(models.Model):
     def __unicode__(self):
         return self.title
 
+    def save(self, force_insert=False, force_update=False):
+        if not self.slug:
+            self.slug = h.slugify(self.title)
+        return super(Album, self).save(force_insert, force_update)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('photogallery-album-photos', (), {
+            'slug': self.slug,
+            })
 
 class Photo(models.Model):
     image = models.ImageField(

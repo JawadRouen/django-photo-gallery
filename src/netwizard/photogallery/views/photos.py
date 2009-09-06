@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache, cache_page
 from django.http import Http404, HttpResponseRedirect
@@ -9,6 +10,7 @@ from tagging.views import tagged_object_list
 
 from django.views.generic.list_detail import object_list, object_detail
 from django.views.generic.create_update import update_object, create_object
+from django.template import RequestContext
 
 from netwizard.photogallery.models import Photo, Album
 from netwizard.photogallery import forms, auth
@@ -54,12 +56,12 @@ def show(request, id, template_name=None, extra_context=None, **kw):
             queryset=Photo.objects.published(),
             template_name=template_name or 'photogallery/show.html',
             extra_context = extra_context,
-            template_object_name='photo', **kw)
+            template_object_name='photo')
 
 
 @login_required
 @never_cache
-def edit(request, id, form_class=forms.PhotoEdit, redirect_to=None, template_name=None):
+def edit(request, id, form_class=forms.PhotoEdit, redirect_to=None, template_name=None, extra_context=None):
     try:
         photo = Photo.objects.published().get(id=id)
         if not auth.can_edit_photo(request.user, photo):
@@ -84,10 +86,35 @@ def edit(request, id, form_class=forms.PhotoEdit, redirect_to=None, template_nam
             flash(request, _('Photo updated') if id else _('Photo added'))
             return redirect(reverse='photogallery-photos-show', id=photo.id)
     else:
-        form = forms.form_class(instance=photo)
+        form = form_class(instance=photo)
 
     ctx = extra_context or {}
-    ctx.update({'form': form, 'photo': photo, 'can_edit': can_edit})
+    ctx.update({
+        'form': form, 
+        'photo': photo, 
+        'can_edit': auth.can_edit_photo(request.user, photo),
+        })
 
     return render_to_response(template_name or 'photogallery/edit_photo.html',
+            ctx, RequestContext(request))
+
+
+@login_required
+@never_cache
+def delete(request, id, confirm=False, redirect_to=None, template_name=None, extra_context=None):
+    try:
+        photo = Photo.objects.published().get(id=id)
+    except Photo.DoesNotExist:
+        raise Http404
+
+    if confirm or request.POST.get('confirm'): 
+        photo.delete()
+        flash(request, _('Photo deleted'))
+        return redirect(redirect_to or reverse('photogallery-album-photos', kwargs={'id':photo.album_id}))
+
+    ctx = extra_context or {}
+    ctx.update({
+        'photo': photo,
+        })
+    return render_to_response(template_name or 'photogallery/delete_photo.html',
             ctx, RequestContext(request))

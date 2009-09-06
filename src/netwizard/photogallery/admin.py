@@ -4,8 +4,10 @@ from netwizard.django.apps.batchadmin import admin as batchadmin
 from django.contrib.admin import site
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from forms import PhotoAdminModelForm
 
 import models
+
 
 class AlbumAdmin(admin.ModelAdmin):
     list_display = ('title', 'is_published', 'created_at',)
@@ -23,6 +25,7 @@ class AlbumAdmin(admin.ModelAdmin):
 
 
 class PhotoAdmin(admin.ModelAdmin):
+    form = PhotoAdminModelForm
     list_display = ('id', 'title', 'album', 'shoot_date', 'is_published', 'is_featured', 'uploader', 'created_at',)
     list_display_links = ('id', 'title', )
     search_fields = ('title', 'description', )

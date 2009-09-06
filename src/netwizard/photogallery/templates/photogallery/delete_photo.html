@@ -1,0 +1,17 @@
+{% extends "photogallery/base_site.html" %}
+{% load widgets i18n %}
+
+{% block content %}
+
+{% if photo.id %}
+{% include_widget PhotoView photo %}
+{% endif %}
+
+<form id="PhotoEditForm" method="post" action="{% url photogallery-photo-delete photo.id %}">
+    <fieldset>
+        {% trans "Are you sure?" %}
+        <input type="submit" name="confirm" value="{% trans "Yes, delete photo." %}" />
+    </fieldset>
+</form>
+
+{% endblock %}
