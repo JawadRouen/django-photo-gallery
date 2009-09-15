@@ -11,6 +11,11 @@ class PhotoAdminModelForm(ModelForm):
     class Meta:
         model = models.Photo
 
+    def __init__(self, *args, **kwargs):
+        super(PhotoAdminModelForm, self).__init__(*args, **kwargs)
+        if self.instance:
+            self.initial['tags'] = ', '.join([unicode(tag) for tag in self.instance.tags])
+
     def save(self, commit=True):
         out = super(PhotoAdminModelForm, self).save(commit=commit)
         if self.instance:
