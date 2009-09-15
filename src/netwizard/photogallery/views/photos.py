@@ -58,6 +58,35 @@ def show(request, id, template_name=None, extra_context=None, **kw):
             extra_context = extra_context,
             template_object_name='photo')
 
+@login_required
+@never_cache
+def create(request, albumslug=None, form_class=forms.PhotoEdit,  template_name=None, extra_context=None, post_save_redirect=None):
+    ctx = {}
+    form_init = {}
+    album = None
+    if albumslug:
+        album = Album.objects.published().get(slug=albumslug)
+        ctx['album'] = album
+        form_init['album'] = album.id
+    if request.method == 'POST':
+        form = form_class(request.POST, request.FILES, initial=form_init)
+        if form.is_valid():
+            photo = form.save()
+            if post_save_redirect:
+                return HttpResponseRedirect(post_save_redirect % photo.__dict__)
+            elif hasattr(photo, 'get_absolute_url'):
+                return HttpResponseRedirect(photo.get_absolute_url())
+            else:
+                return redirect(reverse='photogallery-photos-show', id=photo.id)
+    else:
+        form = form_class(initial=form_init)
+
+    ctx['form'] = form
+    extra_context = extra_context or {}
+    extra_context.update(ctx)
+
+    return render_to_response(template_name or "photogallery/create_photo.html",
+            extra_context, RequestContext(request))
 
 @login_required
 @never_cache

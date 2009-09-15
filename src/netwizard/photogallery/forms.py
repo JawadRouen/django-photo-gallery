@@ -14,22 +14,24 @@ class PhotoAdminModelForm(ModelForm):
     def save(self, commit=True):
         out = super(PhotoAdminModelForm, self).save(commit=commit)
         if self.instance:
+            if not self.instance.is_published:
+                self.instance.is_published = True
             self.instance.tags = self.cleaned_data['tags']
             self.instance.save()
         return out
 
 class PhotoEdit(PhotoAdminModelForm):
     class Meta(PhotoAdminModelForm.Meta):
-        fields = ('image', 'title', 'description', 'tags',)
+        fields = ('image', 'title', 'album', 'description', 'tags',)
 
 
-class PhotoWithAlbumEdit(ModelForm):
+class PhotoWithAlbumEdit(PhotoAdminModelForm):
     album = fields.CityAlbumChoice(models.Album.objects, required=False)
 
     class Meta:
         model = models.Photo
-        fields = ('image', 'title', 'album', 'description')
-
+        fields = ('image', 'title', 'album', 'description', 'tags',)
+    
 
 class AlbumEdit(ModelForm):
     class Meta:
