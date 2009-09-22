@@ -43,3 +43,10 @@ class PhotoAdmin(admin.ModelAdmin):
 
 site.register(models.Album, AlbumAdmin)
 site.register(models.Photo, PhotoAdmin)
+
+try:
+    from antymedia.antyadmin.admin import site
+    from plugins import GallerySummary
+    site.register_dashboard(GallerySummary())
+except ImportError:
+    pass
