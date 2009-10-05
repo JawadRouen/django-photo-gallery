@@ -18,15 +18,15 @@ from netwizard.photogallery import forms, auth
 
 
 
-def list(request, id=None, slug=None, template_name=None, paginate_by=None, **kwargs):
-    photos = Photo.objects.published()
+def list(request, id=None, slug=None, template_name=None, paginate_by=None, queryset=None, **kwargs):
+    photos = queryset or Photo.objects
+    photos = photos.published()
     album = None
     if id: # album
         photos = photos.filter(album=id)
         album = Album.objects.published().get(id=id)
     elif slug:
-        album = Album.objects.published().get(slug=slug)
-        photos = album.photos.published()
+        photos = photos.filter(album__slug=slug)
 
     ctx = {
         'album': album,

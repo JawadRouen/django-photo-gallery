@@ -13,9 +13,15 @@ class AlbumManager(models.Manager):
         return self.get_query_set().filter(is_published=True)
 
 
-class PhotoManager(models.Manager):
+class PhotoQuerySet(models.query.QuerySet):
     def published(self):
-        return self.get_query_set().filter(is_published=True)
+        return self.filter(is_published=True)
+
+
+class PhotoManager(models.Manager):
+
+    def published(self):
+        return self.get_query_set().published()
     
     def get_max_updated_at(self, qs):
         return None
@@ -26,6 +32,9 @@ class PhotoManager(models.Manager):
 
     def featured(self):
         return self.filter(is_featured=True)
+
+    def get_query_set(self):
+        return PhotoQuerySet(self.model)
 
 
 class Album(models.Model):
