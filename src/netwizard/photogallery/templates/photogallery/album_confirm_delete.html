@@ -1,0 +1,13 @@
+{% extends "photogallery/base_site.html" %}
+{% load widgets i18n %}
+
+{% block content %}
+
+<form method="post" action="{% url photogallery-album-delete album.id %}">
+    <fieldset>
+        <p>Na pewno usunąć album {{ album.title }} i wszystkie jego zdjęcia?</p>
+        <input type="submit" name="confirm_delete" value="Tak, proszę..." />
+    </fieldset>
+</form>
+
+{% endblock %}

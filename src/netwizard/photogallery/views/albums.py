@@ -3,7 +3,7 @@ views for albums
 """
 
 from django.views.generic.list_detail import object_list
-from django.views.generic.create_update import create_object, update_object
+from django.views.generic.create_update import create_object, update_object, delete_object
 from django.core.urlresolvers import reverse
 from netwizard.photogallery.models import Photo, Album
 
@@ -32,3 +32,12 @@ def edit(request, id=None, slug=None, login_required=True, template_name=None,
             login_required=login_required, template_object_name='album',
             template_name=template_name or 'photogallery/edit_album.html',
             extra_context=ctx, post_save_redirect=post_save_redirect)
+
+def delete(request, id=None, slug=None, login_required=True, template_name=None,
+        extra_context=None, post_delete_redirect=None, **kw):
+    ctx = extra_context or {}
+    return delete_object(request, Album, post_delete_redirect or reverse('photogallery-albums'),
+            object_id=id, slug=slug, login_required=login_required,
+            template_object_name='album', template_name=template_name, 
+            extra_context=ctx)
+

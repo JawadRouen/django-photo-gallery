@@ -44,9 +44,10 @@ class PhotoAdmin(admin.ModelAdmin):
 site.register(models.Album, AlbumAdmin)
 site.register(models.Photo, PhotoAdmin)
 
-try:
-    from antymedia.antyadmin.admin import site
+if hasattr(admin.site, 'register_dashboard'):
     from plugins import GallerySummary
-    site.register_dashboard(GallerySummary())
-except ImportError:
-    pass
+    admin.site.register_dashboard(GallerySummary())
+
+if hasattr(admin.site, 'menu_connect'):
+    admin.site.menu_connect('apps', 'Photo gallery', settings.ADMIN_URL+'photogallery', pri=5, name='apps.photogallery')
+
