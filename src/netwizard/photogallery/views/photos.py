@@ -53,8 +53,22 @@ def list_tagged(request, tag, template_name=None, extra_context=None, paginate_b
 
 
 def show(request, id, template_name=None, extra_context=None, **kw):
+    qs = Photo.objects.published()
+    extra_context = extra_context or {}
+    try:
+        photo = qs.get(id=id)
+        extra_context['next_album_photo'] =\
+                photo.get_next_by_created_at(album=photo.album)
+    except Photo.DoesNotExist:
+        pass
+    try:
+        extra_context['prev_album_photo']=\
+                photo.get_previous_by_created_at(album=photo.album)
+    except Photo.DoesNotExist:
+        pass
+
     return object_detail(request, object_id=id,
-            queryset=Photo.objects.published(),
+            queryset=qs,
             template_name=template_name or 'photogallery/show.html',
             extra_context = extra_context,
             template_object_name='photo')

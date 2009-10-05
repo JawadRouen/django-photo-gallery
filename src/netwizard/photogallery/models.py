@@ -109,5 +109,6 @@ class Photo(models.Model):
     tags = property(_get_tags, _set_tags)
     """
 
+
 tagging.register(Photo)
 
