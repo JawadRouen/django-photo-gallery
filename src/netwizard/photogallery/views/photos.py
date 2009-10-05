@@ -27,6 +27,7 @@ def list(request, id=None, slug=None, template_name=None, paginate_by=None, quer
         album = Album.objects.published().get(id=id)
     elif slug:
         photos = photos.filter(album__slug=slug)
+        album = Album.objects.published().get(slug=slug)
 
     ctx = {
         'album': album,
