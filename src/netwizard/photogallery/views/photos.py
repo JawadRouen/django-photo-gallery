@@ -16,6 +16,7 @@ from django.template import RequestContext
 
 from netwizard.photogallery.models import Photo, Album
 from netwizard.photogallery import forms, auth
+import re
 
 
 
@@ -167,10 +168,11 @@ def delete(request, id, confirm=False, redirect_to=None, template_name=None, ext
     return render_to_response(template_name or 'photogallery/delete_photo.html',
             ctx, RequestContext(request))
 
+RE_SEARCH_SEPARATOR = re.compile('[\s\+]+')
 
 def search(request, keyword=None, **kwargs):
-    keywords = keyword or request.REQUEST.get('keyword').strip().split(' ')
-    keywords = [k.strip() for k in keywords]
+    request_keyword = keyword or request.REQUEST.get('keyword')
+    keywords = RE_SEARCH_SEPARATOR.split(request_keyword)
     queryset = kwargs.get('queryset', Photo.objects)
     tagged = tuple(Photo.tag_objects.with_any(keywords, queryset).values_list('id', flat=True))
     photos = queryset
@@ -180,6 +182,6 @@ def search(request, keyword=None, **kwargs):
         Q(album__description__icontains=keyword))
     kwargs['queryset'] = photos
     extra_context = kwargs.get('extra_context', {})
-    extra_context['keyword'] = ' '.join(keywords)
+    extra_context['keyword'] = request_keyword
     kwargs['extra_context'] = extra_context
     return list(request, **kwargs)
