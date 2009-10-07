@@ -12,8 +12,7 @@ import os
 
 class AlbumManager(models.Manager):
     def published(self):
-        return self.get_query_set().filter(is_published=True)
-
+        return self.get_query_set().filter(is_published=True).order_by('display_order')
 
 class PhotoQuerySet(models.query.QuerySet):
     def published(self):
