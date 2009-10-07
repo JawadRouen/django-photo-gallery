@@ -171,17 +171,22 @@ def delete(request, id, confirm=False, redirect_to=None, template_name=None, ext
 RE_SEARCH_SEPARATOR = re.compile('[\s\+]+')
 
 def search(request, keyword=None, **kwargs):
-    request_keyword = keyword or request.REQUEST.get('keyword')
+    request_keyword = keyword or request.REQUEST.get('keyword').strip()
     keywords = RE_SEARCH_SEPARATOR.split(request_keyword)
     queryset = kwargs.get('queryset', Photo.objects)
-    tagged = tuple(Photo.tag_objects.with_any(keywords, queryset).values_list('id', flat=True))
-    photos = queryset
-    for keyword in keywords:
-        photos = photos.filter(Q(title__icontains=keyword) |
-        Q(description__icontains=keyword) | Q(pk__in=tagged) | Q(album__title__icontains=keyword) |
-        Q(album__description__icontains=keyword))
-    kwargs['queryset'] = photos
     extra_context = kwargs.get('extra_context', {})
-    extra_context['keyword'] = request_keyword
+    if request_keyword:
+        tagged = tuple(Photo.tag_objects.with_any(keywords, queryset).values_list('id', flat=True))
+        photos = queryset
+        for keyword in keywords:
+            photos = photos.filter(Q(title__icontains=keyword) |
+            Q(description__icontains=keyword) | Q(pk__in=tagged) | Q(album__title__icontains=keyword) |
+            Q(album__description__icontains=keyword))
+        kwargs['queryset'] = photos
+        extra_context['keyword'] = request_keyword
+    else:
+        kwargs['queryset'] = queryset.none()
+    extra_context['search'] = True
+    extra_context['found_items_count'] = kwargs['queryset'].count()
     kwargs['extra_context'] = extra_context
     return list(request, **kwargs)
