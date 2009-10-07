@@ -10,7 +10,8 @@ import models
 
 
 class AlbumAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_published', 'created_at',)
+    list_display = ('title', 'is_published', 'display_order', 'created_at',)
+    list_editable = ('display_order',)
     search_fields = ('title', 'description',)
     list_filter = ('is_published', )
     actions = ['publish','hide']

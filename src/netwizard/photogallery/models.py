@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Max
+
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
@@ -47,6 +49,7 @@ class Album(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('created at'))
     updated_at = models.DateTimeField(auto_now_add=True, auto_now=True, verbose_name=_('updated at'))
     is_published = models.BooleanField(default=False, verbose_name=_('is published'))
+    display_order = models.PositiveIntegerField(blank=True, default=0, verbose_name=_('display order'))
     objects = AlbumManager()
 
     class Meta:
@@ -69,6 +72,8 @@ class Album(models.Model):
     def save(self, force_insert=False, force_update=False):
         if not self.slug:
             self.slug = h.slugify(self.title)
+        if not self.display_order:
+            self.display_order = self.__class__.objects.aggregate(display_order=Max('display_order'))['display_order']+1;
         return super(Album, self).save(force_insert, force_update)
 
     @models.permalink
