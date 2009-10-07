@@ -94,6 +94,7 @@ class Photo(models.Model):
     uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos', verbose_name=_('uploader'))
 
     objects = PhotoManager()
+    tag_objects = tagging.managers.ModelTaggedItemManager()
 
     class Meta:
         verbose_name = _('photo')

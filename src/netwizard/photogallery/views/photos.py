@@ -7,6 +7,8 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from netwizard.django.helpers import flash, redirect
 from tagging.views import tagged_object_list
+from tagging.models import TaggedItem
+from django.db.models.query import Q
 
 from django.views.generic.list_detail import object_list, object_detail
 from django.views.generic.create_update import update_object, create_object
@@ -18,9 +20,10 @@ from netwizard.photogallery import forms, auth
 
 
 
-def list(request, id=None, slug=None, template_name=None, paginate_by=None, queryset=None, **kwargs):
-    photos = queryset or Photo.objects
-    photos = photos.published()
+def list(request, id=None, slug=None, template_name=None, paginate_by=None, queryset=None, extra_context=None, **kwargs):
+    photos = queryset if queryset is not None else Photo.objects
+    if photos:
+        photos = photos.published()
     album = None
     if id: # album
         photos = photos.filter(album=id)
@@ -29,15 +32,16 @@ def list(request, id=None, slug=None, template_name=None, paginate_by=None, quer
         photos = photos.filter(album__slug=slug)
         album = Album.objects.published().get(slug=slug)
 
-    ctx = {
+    extra_context = extra_context or {}
+    extra_context.update({
         'album': album,
         'last_updated_at': Photo.objects.get_max_updated_at(photos),
         'tag': None,
-        }
+        })
 
     return object_list(request, paginate_by=paginate_by or 25,
             queryset=photos, template_name=template_name or 'photogallery/list.html',
-            extra_context=ctx, template_object_name='photo', **kwargs)
+            extra_context=extra_context, template_object_name='photo')
 
 
 def list_tagged(request, tag, template_name=None, extra_context=None, paginate_by=None, **kwargs):
@@ -162,3 +166,17 @@ def delete(request, id, confirm=False, redirect_to=None, template_name=None, ext
         })
     return render_to_response(template_name or 'photogallery/delete_photo.html',
             ctx, RequestContext(request))
+
+
+def search(request, keyword=None, **kwargs):
+    keyword = keyword or request.REQUEST.get('keyword')
+    queryset = kwargs.get('queryset', Photo.objects)
+    tagged = tuple(Photo.tag_objects.with_any(keyword, queryset).values_list('id', flat=True))
+    photos = queryset.filter(Q(title__icontains=keyword) |
+        Q(description__icontains=keyword) | Q(pk__in=tagged) | Q(album__title__icontains=keyword) |
+        Q(album__description__icontains=keyword))
+    kwargs['queryset'] = photos
+    extra_context = kwargs.get('extra_context', {})
+    extra_context['keyword'] = keyword
+    kwargs['extra_context'] = extra_context
+    return list(request, **kwargs)
