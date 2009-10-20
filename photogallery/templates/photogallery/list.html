@@ -1,0 +1,22 @@
+{% extends "photogallery/base_site.html" %}
+{% load widgets cache %}
+
+{% block content %}
+
+{% if album %}
+<h3>{{ album.title }}</h3>
+{% endif %}
+
+<div id="PhotoList" class="photo_list">
+{% if album %}
+{% cache 60 photogallery_photo_list photo_list.count album.id album.updated_at last_updated_at tag %}
+    {% include_widget PhotoList photo_list %}
+{% endcache %}
+{% else %}
+{% cache 60 photogallery_photo_list photo_list.count last_updated_at tag %}
+    {% include_widget PhotoList photo_list %}
+{% endcache %}
+{% endif %}
+</div>
+
+{% endblock content %}

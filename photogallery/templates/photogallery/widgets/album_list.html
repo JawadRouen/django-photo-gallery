@@ -1,0 +1,29 @@
+{% extends "photogallery/widgets/base.html" %}
+{% load imageprocess %}
+
+{% block content %}
+
+{% if albums %}
+
+{% for album in albums %}
+{% block content_album %}
+    <div class="album">
+        <a href="{% url photogallery-album-photos album.id %}">
+            {% if album.image %}
+            <img src="{{ MEDIA_URL}}{% thumbnail_url album.image thumb_width|default:120 thumb_height|default:80 %}" alt="{{ album.title|default:"Untitled" }}" />
+            {% else %}
+            {{ album.title|default:"Untitled" }}
+            {% endif %}
+        </a>
+        {% if album.title %}<h4>{{ album.title }}</h4>{% endif %}
+    </div>
+{% endblock content_album %}
+{% endfor %}
+
+{% else %}
+
+<p>Brak albumów</p>
+{% endif %}
+
+
+{% endblock %}

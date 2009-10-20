@@ -1,0 +1,23 @@
+{% extends "photogallery/base_site.html" %}
+{% load widgets %}
+
+{% block content %}
+
+{% if photo.id %}
+{% include_widget PhotoView photo %}
+{% endif %}
+
+{% if can_edit %}
+<form id="PhotoEditForm" method="post" action="{% url photogallery-photo-edit photo.id %}" enctype="multipart/form-data">
+    <fieldset>
+        <table>
+            {{ form.as_table }}
+            <tr><td>&nbsp;</td><td><input type="submit" value="{% if photo.id %}Zapisz{% else %}Dodaj{% endif %}" /></tr>
+        </table>
+    </fieldset>
+</form>
+{% else %}
+    Nie masz upranień do modyfikacji tego zdjęcia
+{% endif %}
+
+{% endblock %}

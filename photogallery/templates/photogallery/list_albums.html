@@ -1,0 +1,17 @@
+{% extends "photogallery/base_site.html" %}
+{% load cache widgets %}
+
+
+{% block content %}
+
+{% cache 60 album_list.count %}
+<div id="PhotoAlbumList">
+<h2>Albumy</h2>
+{% block content_body %}
+{% include_widget AlbumList album_list %}
+{% endblock %}
+
+</div>
+{% endcache %}
+
+{% endblock content %}

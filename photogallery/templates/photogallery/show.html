@@ -1,0 +1,10 @@
+{% extends "photogallery/base_site.html" %}
+{% load widgets cache %}
+
+{% block content %}
+
+{% cache 10 photo_view photo.id photo.updated_at %}
+{% include_widget PhotoView photo %}
+{% endcache %}
+
+{% endblock %}

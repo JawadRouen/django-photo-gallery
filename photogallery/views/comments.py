@@ -13,7 +13,7 @@
 from django.core.paginator import QuerySetPaginator, InvalidPage
 from django.contrib.comments.models import FreeComment
 
-from photos.views import render
+from photogallery.views import render
 from photos.models import Photo
 
 def list(request, page=0):

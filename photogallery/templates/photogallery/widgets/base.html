@@ -1,0 +1,8 @@
+<div{% if id %} id="{{ id }}"{% endif %} class="widget{% if class %} {{ class }}{% endif %}">
+    {% block header %}
+    {% if title %}<h3><span>{{ title }}</span></h3>{% endif %}
+    {% endblock %}
+    {% block content %}{% endblock %}
+    {% block footer %}{% endblock %}
+</div>
+

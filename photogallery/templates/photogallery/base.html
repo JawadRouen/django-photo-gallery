@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>{% block title %}Your photo gallery{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/photogallery.css" />
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+        {% block metas %}{% endblock %}
+    </head>
+    <body class="{% block body_class %}default{% endblock %}">
+        <div id="Container">
+        {% block container %}
+        <h1>{% block content_title %}Your photo gallery{% endblock %}</h1>
+            {% block header %}{% endblock %}
+            {% block left %}{% endblock %}
+            <div id="Main">
+                {% block content %}{% endblock %}
+            </div>
+            {% block right %}{% endblock %}
+            <div class="clr" /></div>
+            <div id="Footer">
+                {% block footer %}{% endblock %}
+            </div>
+        </div>
+        {% endblock %}
+    </body>
+</html>

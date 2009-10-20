@@ -12,8 +12,8 @@
 
 from django.shortcuts import get_object_or_404
 
-from photos.views import render
-from photos.models import Gallery, Photo
+from photogallery.views import render
+from photogallery.models import Gallery, Photo
 
 def photo_detail(request, gallery_slug, photo_slug):
 	gallery = get_object_or_404(Gallery, slug__iexact=gallery_slug)

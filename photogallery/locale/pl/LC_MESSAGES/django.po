@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-10-07 22:23+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: models.py:43 models.py:92 migrations/0013_album-slug.py:29
+#: migrations/0013_album-slug.py:47
+msgid "title"
+msgstr "tytuł"
+
+#: models.py:45 models.py:94 migrations/0013_album-slug.py:23
+#: migrations/0013_album-slug.py:44
+msgid "description"
+msgstr "opis"
+
+#: models.py:48
+msgid "default photo"
+msgstr "zdjęcie główne"
+
+#: models.py:49 models.py:95 migrations/0013_album-slug.py:17
+#: migrations/0013_album-slug.py:50
+msgid "created at"
+msgstr "utworzono"
+
+#: models.py:50 models.py:96 migrations/0013_album-slug.py:35
+#: migrations/0013_album-slug.py:53
+msgid "updated at"
+msgstr "uaktualniono"
+
+#: models.py:51 models.py:97 migrations/0013_album-slug.py:41
+#: migrations/0013_album-slug.py:56
+msgid "is published"
+msgstr "opublikowany?"
+
+#: models.py:52
+msgid "display order"
+msgstr "kolejność"
+
+#: models.py:56 models.py:91 migrations/0013_album-slug.py:14
+msgid "album"
+msgstr "album"
+
+#: models.py:57
+msgid "albums"
+msgstr "albumy"
+
+#: models.py:89 migrations/0013_album-slug.py:32
+msgid "image path"
+msgstr "ścieżka obrazka"
+
+#: models.py:93 migrations/0013_album-slug.py:26
+msgid "shot date"
+msgstr "data zdjęcia"
+
+#: models.py:98 migrations/0013_album-slug.py:20
+msgid "is featured"
+msgstr "wyróżniony?"
+
+#: models.py:99 migrations/0013_album-slug.py:38
+msgid "uploader"
+msgstr "dodał"
+
+#: models.py:105
+msgid "photo"
+msgstr "zdjęcie"
+
+#: models.py:106
+msgid "photos"
+msgstr "zdjęcia"
+
+#: templates/photogallery/add_album.html:10
+msgid "Add"
+msgstr "Dodaj"
+
+#: templates/photogallery/delete_photo.html:12
+msgid "Are you sure?"
+msgstr "Na pewno?"
+
+#: templates/photogallery/delete_photo.html:13
+msgid "Yes, delete photo."
+msgstr "Tak, usuń zdjęcie."
+
+#: templates/photogallery/edit_album.html:10
+msgid "Update"
+msgstr "Aktualizuj"
+
+#: views/ajax.py:28 views/photos.py:128
+msgid "Album %(name)s created"
+msgstr "Album %(name)s został utworzony"
+
+#: views/ajax.py:35 views/photos.py:135
+msgid "Photo updated"
+msgstr "Zdjęcie zostało uaktualnione"
+
+#: views/ajax.py:35 views/photos.py:135
+msgid "Photo added"
+msgstr "Zdjęcie zostało dodane"
+
+#: views/photos.py:161
+msgid "Photo deleted"
+msgstr "Zdjęcie zostało usunięte"
+
+#~ msgid "photogallery"
+#~ msgstr "galeria zdjęć"
