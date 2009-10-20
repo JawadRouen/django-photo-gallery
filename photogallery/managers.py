@@ -11,6 +11,8 @@
     Author: Marcin Nowak
 """
 
+from django.db import models
+
 __all__ = ['AlbumManager', 'PhotoManager',]
 
 class PhotoQuerySet(models.query.QuerySet):

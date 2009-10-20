@@ -131,7 +131,7 @@ class Photo(models.Model):
     is_featured = models.BooleanField(default=False, verbose_name=_('is featured'))
     uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos', verbose_name=_('uploader'))
     slug = models.SlugField(_('slug'), unique=True)
-    location = models.CharField(_('location'), max_length=50, blank=True, null=True)
+    #location = models.CharField(_('location'), max_length=50, blank=True, null=True)
 
     objects = PhotoManager()
     tag_objects = tagging.managers.ModelTaggedItemManager()

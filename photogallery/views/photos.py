@@ -5,7 +5,6 @@ from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
-from netwizard.django.helpers import flash, redirect
 from tagging.views import tagged_object_list
 from tagging.models import TaggedItem
 from django.db.models.query import Q
@@ -27,9 +26,9 @@ def list(request, id=None, album_slug=None, template_name=None, paginate_by=None
     if id: # album
         photos = photos.filter(album=id)
         album = Album.objects.published().get(id=id)
-    elif slug:
-        photos = photos.filter(album__slug=slug)
-        album = Album.objects.published().get(slug=slug)
+    elif album_slug:
+        photos = photos.filter(album__slug=album_slug)
+        album = Album.objects.published().get(slug=album_slug)
 
     extra_context = extra_context or {}
     extra_context.update({

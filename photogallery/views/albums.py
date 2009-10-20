@@ -5,7 +5,7 @@ views for albums
 from django.views.generic.list_detail import object_list, object_detail
 from django.views.generic.create_update import create_object, update_object, delete_object
 from django.core.urlresolvers import reverse
-from netwizard.photogallery.models import Photo, Album
+from photogallery.models import Photo, Album
 
 def list(request, queryset=None, template_name=None, **kwargs):
     queryset = queryset or Album.objects.published() 
