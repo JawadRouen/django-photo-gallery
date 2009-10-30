@@ -38,7 +38,7 @@ class AlbumAdmin(admin.ModelAdmin):
 class PhotoAdmin(admin.ModelAdmin):
     form = PhotoAdminModelForm
     prepopulated_fields = {'slug': ('title',)}
-    list_display = ('id', 'title', 'album', 'location', 'shoot_date', 'is_published', 'is_featured', 'uploader', 'created_at',)
+    list_display = ('id', 'title', 'album', 'shoot_date', 'is_published', 'is_featured', 'uploader', 'created_at',)
     list_display_links = ('id', 'title', )
     search_fields = ('title', 'description', )
     list_filter = ('album', 'is_published', 'is_featured',)

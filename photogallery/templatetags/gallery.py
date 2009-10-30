@@ -1,6 +1,6 @@
 from django.utils.safestring import mark_safe, mark_for_escaping
 from django import template
-from netwizard.photogallery.models import Album
+from photogallery.models import Album
 
 register = template.Library()
 
