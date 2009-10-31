@@ -15,7 +15,7 @@ import os
 
 from django.db import models
 from django.db.models import Max
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.db.models import permalink
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -68,7 +68,9 @@ class Album(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         if not self.display_order:
-            self.display_order = self.__class__.objects.aggregate(display_order=Max('display_order'))['display_order']+1;
+            _max = self.__class__.objects.aggregate(display_order=
+                    Max('display_order'))['display_order'] or 0
+            self.display_order = _max + 1
         return super(Album, self).save(force_insert, force_update)
 
     @permalink
@@ -116,6 +118,7 @@ class Album(models.Model):
 
 
 class Photo(models.Model):
+    default_slug = ugettext('unnamed')
     image = models.ImageField(
             max_length=255,
             upload_to=os.path.join('uploads','photogallery'),
@@ -130,7 +133,7 @@ class Photo(models.Model):
     is_published = models.BooleanField(default=False, verbose_name=_('is published'))
     is_featured = models.BooleanField(default=False, verbose_name=_('is featured'))
     uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos', verbose_name=_('uploader'))
-    slug = models.SlugField(_('slug'), unique=True)
+    slug = models.SlugField(_('slug'), unique=True, blank=True)
     #location = models.CharField(_('location'), max_length=50, blank=True, null=True)
 
     objects = PhotoManager()
@@ -141,7 +144,20 @@ class Photo(models.Model):
         verbose_name_plural = _('photos')
 
     def __unicode__(self):
-        return u"%s" % self.title
+        return u"%s" % (self.title or self.slug)
+
+    def save(self, force_insert=False, force_update=False):
+        if not self.slug:
+            if self.title:
+                self.slug = slugify(self.title)
+            else:
+                _nonames = self.__class__.objects.filter(
+                        slug__istartswith=self.default_slug).count() 
+                if _nonames:
+                    self.slug = '%s-%d' % (self.default_slug, _nonames+1)
+                else:
+                    self.slug = self.default_slug
+        return super(Photo, self).save(force_insert, force_update)
 
     @permalink
     def get_absolute_url(self):
