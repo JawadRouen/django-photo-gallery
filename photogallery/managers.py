@@ -40,5 +40,8 @@ class PhotoManager(models.Manager):
     def featured(self):
         return self.filter(is_featured=True)
 
+    def last_added(self):
+        return self.get_query_set().order_by('-created_at')
+
     def get_query_set(self):
         return PhotoQuerySet(self.model)
