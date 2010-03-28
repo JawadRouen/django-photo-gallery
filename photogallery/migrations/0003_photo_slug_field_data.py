@@ -9,7 +9,7 @@ class Migration:
         from photogallery.utils import slugify
         "Write your forwards migration here"
         for photo in orm.Photo.objects.all():
-            photo.slug = slugify(photo.title or str(photo.id))
+            photo.slug = '%s_%d' % (slugify(photo.title or str(photo.id)), photo.id)
             photo.save()
     
     
