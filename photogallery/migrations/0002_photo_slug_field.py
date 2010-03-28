@@ -8,7 +8,7 @@ class Migration:
     def forwards(self, orm):
         
         # Adding field 'Photo.slug'
-        db.add_column('photogallery_photo', 'slug', models.SlugField(_('slug'), blank=True, null=True))
+        db.add_column('photogallery_photo', 'slug', models.SlugField(_('slug'), blank=True, null=True, max_length=255))
         
     
     
@@ -33,7 +33,7 @@ class Migration:
             'is_featured': ('models.BooleanField', [], {'default': 'False', 'verbose_name': "_('is featured')"}),
             'is_published': ('models.BooleanField', [], {'default': 'False', 'verbose_name': "_('is published')"}),
             'shoot_date': ('models.DateField', [], {'null': 'True', 'verbose_name': "_('shot date')", 'blank': 'True'}),
-            'slug': ('models.SlugField', ["_('slug')"], {'unique': 'True'}),
+            'slug': ('models.SlugField', ["_('slug')"], {'max_length': 255, 'unique': 'True'}),
             'title': ('models.CharField', [], {'verbose_name': "_('title')", 'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'updated_at': ('models.DateTimeField', [], {'auto_now_add': 'True', 'auto_now': 'True', 'verbose_name': "_('updated at')"}),
             'uploader': ('models.ForeignKey', ['User'], {'related_name': "'uploaded_photos'", 'null': 'True', 'verbose_name': "_('uploader')", 'blank': 'True'})

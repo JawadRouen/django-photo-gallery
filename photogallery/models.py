@@ -134,7 +134,7 @@ class Photo(models.Model):
     is_published = models.BooleanField(default=False, verbose_name=_('is published'))
     is_featured = models.BooleanField(default=False, verbose_name=_('is featured'))
     uploader = models.ForeignKey(User, null=True, blank=True, related_name='uploaded_photos', verbose_name=_('uploader'))
-    slug = models.SlugField(_('slug'), unique=True, blank=True)
+    slug = models.SlugField(_('slug'), unique=True, blank=True, max_length=255)
     #location = models.CharField(_('location'), max_length=50, blank=True, null=True)
 
     objects = PhotoManager()
