@@ -26,6 +26,7 @@ from django.contrib.auth.models import User
 from tagging.fields import TagField
 from tagging.models import Tag
 import tagging
+import tagging.managers
 
 from photogallery.utils import slugify
 from photogallery.managers import *
