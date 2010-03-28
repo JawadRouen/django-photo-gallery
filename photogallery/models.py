@@ -77,13 +77,13 @@ class Album(models.Model):
     @permalink
     def get_absolute_url(self):
         return ('photo_album_title', None, {
-            'slug' : self.slug
+            'album_slug' : self.slug
             })
 
     @permalink
     def get_album_url(self):
         return ('photo_album_detail', None, {
-            'slug' : self.slug
+            'album_slug' : self.slug
             })
 
     # backward compatibility
@@ -160,9 +160,15 @@ class Photo(models.Model):
                     self.slug = self.default_slug
         return super(Photo, self).save(force_insert, force_update)
 
+    def get_next_by_album(self):
+        return self.get_next_by_created_at(album=self.album)
+
+    def get_previous_by_album(self):
+        return self.get_previous_by_created_at(album=self.album)
+
     @permalink
     def get_absolute_url(self):
-       return ('photo_gallery_photo_detail', None, {
+       return ('photo_album_photo_detail', None, {
             'photo_slug' : self.slug,
             'album_slug' : self.album.slug,
             })

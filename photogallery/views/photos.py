@@ -4,7 +4,7 @@ from django.views.decorators.cache import never_cache, cache_page
 from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from tagging.views import tagged_object_list
 from tagging.models import TaggedItem
 from django.db.models.query import Q
@@ -58,20 +58,6 @@ def detail(request, id=None, photo_slug=None, album_slug=None, template_name=Non
     qs = Photo.objects.published()
     if album_slug:
         qs.filter(album__slug__exact = album_slug)
-
-    extra_context = extra_context or {}
-    try:
-        photo = qs.get(id=id)
-        extra_context['next_album_photo'] =\
-                photo.get_next_by_created_at(album=photo.album)
-    except Photo.DoesNotExist:
-        pass
-    try:
-        extra_context['prev_album_photo']=\
-                photo.get_previous_by_created_at(album=photo.album)
-    except Photo.DoesNotExist:
-        pass
-
     return object_detail(request, object_id=id, slug=photo_slug,
             queryset=qs,
             template_name=template_name or 'photogallery/show.html',
@@ -127,15 +113,15 @@ def edit(request, id, form_class=forms.PhotoEdit, redirect_to=None, template_nam
             if request.POST.get('create_album'):
                 album = Album()
                 album.title = request.POST.get('new_album_name')
-                self.flash(_('Album %(name)s created') % {'name': album.title })
+                request.user.message_set.create(message=_('Album %(name)s created') % {'name': album.title })
                 album.save()
                 photo.album = album
             if photo.album:
                 photo.album.updated_at = datetime.datetime.now()
                 photo.album.save(force_update=True)
             photo.save()
-            flash(request, _('Photo updated') if id else _('Photo added'))
-            return redirect(reverse='photogallery-photos-show', id=photo.id)
+            request.user.message_set.create(message=_('Photo updated') if id else _('Photo added'))
+            return redirect(redirect_to or photo)
     else:
         form = form_class(instance=photo)
 
@@ -160,8 +146,8 @@ def delete(request, id, confirm=False, redirect_to=None, template_name=None, ext
 
     if confirm or request.POST.get('confirm'): 
         photo.delete()
-        flash(request, _('Photo deleted'))
-        return redirect(redirect_to or reverse('photogallery-album-photos', kwargs={'id':photo.album_id}))
+        request.user.message_set.create(message=_('Photo deleted'))
+        return redirect(redirect_to or photo.album)
 
     ctx = extra_context or {}
     ctx.update({

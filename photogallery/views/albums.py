@@ -17,8 +17,10 @@ def list(request, queryset=None, template_name=None, **kwargs):
 def index(request, **kwargs):
     return list(request, **kwargs)
 
-def title(request, album_id=None, album_slug=None, template_name=None, extra_context=None):
-	return object_detail(request, object_id=album_id, slug=album_slug,
+def title(request, queryset=None, album_id=None, album_slug=None, template_name=None, 
+        extra_context=None):
+    queryset = queryset or Album.objects.published() 
+    return object_detail(request, queryset, object_id=album_id, slug=album_slug,
             template_name = template_name or 'photogallery/gallery_title.html',
             extra_context = extra_context);
 
