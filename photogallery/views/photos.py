@@ -68,12 +68,12 @@ show = detail # BC
 
 @login_required
 @never_cache
-def create(request, albumslug=None, form_class=forms.PhotoEdit,  template_name=None, extra_context=None, post_save_redirect=None):
+def create(request, album_slug=None, form_class=forms.PhotoEdit,  template_name=None, extra_context=None, post_save_redirect=None):
     ctx = {}
     form_init = {}
     album = None
-    if albumslug:
-        album = Album.objects.published().get(slug=albumslug)
+    if album_slug:
+        album = Album.objects.published().get(slug=album_slug)
         ctx['album'] = album
         form_init['album'] = album.id
     if request.method == 'POST':
