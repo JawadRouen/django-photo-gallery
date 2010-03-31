@@ -33,6 +33,7 @@ from photogallery.managers import *
 
 from warnings import warn
 import os
+import re
 
 
 class Album(models.Model):
@@ -140,6 +141,8 @@ class Photo(models.Model):
     objects = PhotoManager()
     tag_objects = tagging.managers.ModelTaggedItemManager()
 
+    re_slug = re.compile('^.*?-([0-9]+)$')
+
     class Meta:
         verbose_name = _('photo')
         verbose_name_plural = _('photos')
@@ -151,6 +154,16 @@ class Photo(models.Model):
         if not self.slug:
             if self.title:
                 self.slug = slugify(self.title)
+                # avoid duplicate slugs
+                while self.__class__.objects.filter(
+                        slug=self.slug).count():
+                    match = self.re_slug.search(self.slug)
+                    if match:
+                        idx = int(match.group(1))
+                        self.slug = re.sub('-%d$' % idx, '-%d' % (idx+1),
+                            self.slug)
+                    else:
+                        self.slug = '%s-1' % self.slug
             else:
                 _nonames = self.__class__.objects.filter(
                         slug__istartswith=self.default_slug).count() 
