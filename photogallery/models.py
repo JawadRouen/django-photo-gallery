@@ -28,7 +28,7 @@ from tagging.models import Tag
 import tagging
 import tagging.managers
 
-from photogallery.utils import slugify
+from photogallery.utils import slugify, unique_slugify
 from photogallery.managers import *
 
 from warnings import warn
@@ -152,25 +152,8 @@ class Photo(models.Model):
 
     def save(self, force_insert=False, force_update=False):
         if not self.slug:
-            if self.title:
-                self.slug = slugify(self.title)
-                # avoid duplicate slugs
-                while self.__class__.objects.filter(
-                        slug=self.slug).count():
-                    match = self.re_slug.search(self.slug)
-                    if match:
-                        idx = int(match.group(1))
-                        self.slug = re.sub('-%d$' % idx, '-%d' % (idx+1),
-                            self.slug)
-                    else:
-                        self.slug = '%s-1' % self.slug
-            else:
-                _nonames = self.__class__.objects.filter(
-                        slug__istartswith=self.default_slug).count() 
-                if _nonames:
-                    self.slug = '%s-%d' % (self.default_slug, _nonames+1)
-                else:
-                    self.slug = self.default_slug
+            slug_source = self.title or self.default_slug
+            unique_slugify(self, slug_source)
         return super(Photo, self).save(force_insert, force_update)
 
     def get_next_by_album(self):
